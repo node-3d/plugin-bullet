@@ -1,12 +1,12 @@
 import * as three from 'three';
-import { init, addThreeHelpers } from '3d-core-raub';
-import { init as initBullet } from '3d-bullet-raub';
-import type { TOptsShape, TShapeInstance } from '3d-bullet-raub';
-import type { TVec3Either } from 'bullet-raub';
+import { init, addThreeHelpers, Image, Screen } from '@node-3d/core';
+import { init as initBullet } from '@node-3d/plugin-bullet';
+import type { TOptsShape, TShapeInstance } from '@node-3d/plugin-bullet';
+import type { TVec3Like } from '@node-3d/bullet';
 
 
 const {
-	doc, Image: Img, gl, loop, Screen,
+	doc, loop,
 } = init({
 	isGles3: true,
 	isWebGL2: true,
@@ -16,12 +16,16 @@ const {
 	msaa: 2,
 });
 
-addThreeHelpers(three, gl);
+addThreeHelpers(three);
 
 const { scene, Shape } = initBullet({ three });
 
-const icon = new Img('bullet.png');
-icon.on('load', () => { doc.icon = (icon as unknown as typeof doc.icon); });
+const icon = new Image('bullet.png');
+icon.on('load', () => {
+	if (icon.data) {
+		doc.icon = { width: icon.width, height: icon.height, data: icon.data };
+	}
+});
 doc.title = 'Bullet';
 
 const screen = new Screen({ three, fov: 60, near: 1, far: 200 });
@@ -38,16 +42,14 @@ screen.scene.fog = new three.FogExp2(0x87ceeb, 0.007);
 
 const getRandom = (min: number, max: number): number => Math.random() * (max - min) + min;
 
-const getRandomPosition = (): TVec3Either => ({
+const getRandomPosition = (): TVec3Like => ({
 	x: getRandom(-10, 10),
 	y: getRandom(20, 2000),
 	z: getRandom(-10, 10)
 });
 
 let dx = 0;
-let dy = 0;
 let dz = 0;
-
 
 const F_KEY = 70;
 const UP_ARROW = 87;
@@ -130,6 +132,7 @@ const plane = new Shape({
 const raycaster = new three.Raycaster();
 const mouse = new three.Vector2();
 
+const isShapeInstance = (body: unknown): body is TShapeInstance => body instanceof Shape;
 
 screen.on('mousedown', (e) => {
 	mouse.x = (e.x / screen.w) * 2 - 1;
@@ -142,7 +145,7 @@ screen.on('mousedown', (e) => {
 	const end = ray.at(9001, new three.Vector3());
 	
 	const { body } = scene.hit(start, end);
-	const shape: TShapeInstance | null = body instanceof Shape ? body as TShapeInstance : null;
+	const shape = isShapeInstance(body) ? body : null;
 	
 	if (shape?.mass) {
 		if (e.button === 0) { // left
@@ -200,7 +203,7 @@ const createCapsule = (): TShapeInstance => {
 	});
 };
 
-const bodies: TShapeInstance[] = [];
+const bodies: TShapeInstance[] = [plane];
 
 for (let i = 0; i < 40; i++) {
 	bodies.push(createBox());
@@ -212,7 +215,6 @@ for (let i = 0; i < 40; i++) {
 
 loop(() => {
 	screen.camera.position.x += dx;
-	screen.camera.position.y += dy;
 	screen.camera.position.z += dz;
 	
 	scene.update();

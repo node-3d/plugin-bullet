@@ -1,10 +1,10 @@
 {
 	"author": "Luis Blanco <luisblanco1337@gmail.com>",
-	"name": "3d-bullet-raub",
-	"version": "3.0.0",
+	"name": "@node-3d/plugin-bullet",
+	"version": "4.0.0",
 	"description": "Bullet Physics plugin for Node.js 3D Core",
 	"license": "MIT",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"keywords": [
 		"plugin",
 		"3d",
@@ -13,35 +13,58 @@
 		"physics"
 	],
 	"files": [
-		"js",
-		"index.js",
+		"dist",
 		"LICENSE",
 		"package.json",
-		"README.md"
+		"README.md",
+		"tsconfig.json",
+		"tsconfig.build.json"
 	],
 	"engines": {
-		"node": ">=22.14.0",
-		"npm": ">=10.8.3"
+		"node": ">=24.13.0",
+		"npm": ">=11.6.2"
 	},
 	"scripts": {
-		"eslint": "eslint .",
-		"test": "node --test --watch",
-		"test-ci": "node --test"
+		"test:watch": "node --test --watch \"test/**/*.test.ts\"",
+		"test:ci": "node --test \"test/**/*.test.ts\"",
+		"lint:oxlint": "oxlint .",
+		"lint:all": "npm run lint:ts && npm run lint:oxlint",
+		"build:ci": "rslib build",
+		"build:watch": "rslib build --watch",
+		"lint:ts": "tsgo -p tsconfig.json --noEmit",
+		"prepare": "npm run build:ci"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/node-3d/3d-bullet-raub.git"
+		"url": "https://github.com/node-3d/plugin-bullet.git"
 	},
 	"dependencies": {
-		"bullet-raub": "^4.1.0"
+		"@node-3d/bullet": "^5.0.0"
 	},
 	"devDependencies": {
-		"3d-core-raub": "^5.3.0",
-		"@types/node": "^22.10.5",
-		"@eslint/js": "^9.17.0",
+		"@types/node": "^24.1.0",
 		"@types/three": "0.174.0",
-		"eslint": "^9.17.0",
+		"@node-3d/core": "^6.0.0",
+		"@node-3d/addon-tools": "^11.0.0",
+		"oxlint": "^1.65.0",
 		"three": "0.174.0",
-		"typescript": "^5.7.2"
+		"typescript": "^6.0.3",
+		"@rslib/core": "^0.21.3",
+		"@typescript/native-preview": "^7.0.0-dev.20260503.1"
+	},
+	"type": "module",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"bugs": {
+		"url": "https://github.com/node-3d/node-3d/issues"
+	},
+	"homepage": "https://github.com/node-3d/node-3d#readme",
+	"publishConfig": {
+		"access": "public"
 	}
 }

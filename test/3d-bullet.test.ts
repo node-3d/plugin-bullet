@@ -1,10 +1,8 @@
-'use strict';
-
-const assert = require('node:assert').strict;
-const { describe, it } = require('node:test');
-const three = require('three');
-const { init } = require('3d-core-raub');
-const { init: initBullet } = require('..');
+import { strict as assert } from 'node:assert';
+import { describe, it } from 'node:test';
+import * as three from 'three';
+import { init } from '@node-3d/core';
+import { init as initBullet } from '@node-3d/plugin-bullet';
 
 init();
 
@@ -16,7 +14,7 @@ const {
 
 const initResults = [
 	'Shape', 'scene', 'bullet',
-];
+] as const;
 
 const initedClasses = {
 	Shape: {
@@ -25,20 +23,20 @@ const initedClasses = {
 		},
 		props: ['debug', 'mesh'],
 	},
-};
+} as const;
 
 
-const tested = describe('Bullet 3D Inited', async () => {
+const tested = describe('Bullet 3D Inited', () => {
 	it('returns all init results', () => {
-		initResults.forEach(
-			(name) => assert.ok(
+		for (const name of initResults) {
+			assert.ok(
 				typeof inited[name],
 				`Init field "${name}" is missing.`,
-			),
-		);
+			);
+		}
 	});
 	
-	Object.keys(initedClasses).forEach((c) => {
+	for (const c of Object.keys(initedClasses) as (keyof typeof initedClasses)[]) {
 		it(`exports class "${c}"`, () => {
 			assert.strictEqual(typeof inited[c], 'function');
 		});
@@ -54,18 +52,16 @@ const tested = describe('Bullet 3D Inited', async () => {
 		});
 		
 		it(`exposes properties of "${c}"`, () => {
-			current.props.forEach((prop) => {
+			for (const prop of current.props) {
 				assert.ok(
-					typeof instance[prop] !== 'undefined',
+					instance[prop] !== undefined,
 					`Property "${c}.${prop}" not found.`,
 				);
-			});
+			}
 		});
-	});
+	}
 });
 
-(async () => {
-	const interv = setInterval(() => scene.update(), 15);
-	await tested;
-	clearInterval(interv);
-})();
+const interv = setInterval(() => scene.update(), 15);
+await tested;
+clearInterval(interv);
