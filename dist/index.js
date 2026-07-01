@@ -78,7 +78,7 @@ promisify(exec);
 getLogger('addon-tools');
 globalThis.AddonTools ??= {};
 const DEFAULT_COLOR = 0xb7fffa;
-const shape_logger = getLogger('3d-bullet');
+const shape_logger = getLogger('plugin-bullet');
 const warnWithTrace = (...args)=>{
     shape_logger.warn(...args);
     shape_logger.warn(new Error('Debug mesh warning trace').stack);

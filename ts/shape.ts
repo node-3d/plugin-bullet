@@ -14,7 +14,7 @@ import type {
 } from './types.ts';
 
 const DEFAULT_COLOR = 0xb7fffa;
-const logger = getLogger('3d-bullet');
+const logger = getLogger('plugin-bullet');
 
 const warnWithTrace = (...args: readonly unknown[]): void => {
 	logger.warn(...args);
