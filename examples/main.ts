@@ -4,10 +4,7 @@ import { init as initBullet } from '@node-3d/plugin-bullet';
 import type { TOptsShape, TShapeInstance } from '@node-3d/plugin-bullet';
 import type { TVec3Like } from '@node-3d/bullet';
 
-
-const {
-	doc, loop,
-} = init({
+const { doc, loop } = init({
 	isGles3: true,
 	isWebGL2: true,
 	autoEsc: true,
@@ -45,7 +42,7 @@ const getRandom = (min: number, max: number): number => Math.random() * (max - m
 const getRandomPosition = (): TVec3Like => ({
 	x: getRandom(-10, 10),
 	y: getRandom(20, 2000),
-	z: getRandom(-10, 10)
+	z: getRandom(-10, 10),
 });
 
 let dx = 0;
@@ -57,7 +54,7 @@ const DOWN_ARROW = 83;
 const LEFT_ARROW = 65;
 const RIGHT_ARROW = 68;
 
-screen.on('keydown', e => {
+screen.on('keydown', (e) => {
 	if (e.keyCode === F_KEY) {
 		if (e.ctrlKey && e.shiftKey) {
 			screen.mode = 'windowed';
@@ -67,7 +64,7 @@ screen.on('keydown', e => {
 			screen.mode = 'borderless';
 		}
 	}
-	
+
 	if (e.keyCode === UP_ARROW) {
 		dz = -0.2;
 	} else if (e.keyCode === DOWN_ARROW) {
@@ -79,14 +76,13 @@ screen.on('keydown', e => {
 	}
 });
 
-screen.on('keyup', e => {
+screen.on('keyup', (e) => {
 	if (e.keyCode === UP_ARROW || e.keyCode === DOWN_ARROW) {
 		dz = 0;
 	} else if (e.keyCode === LEFT_ARROW || e.keyCode === RIGHT_ARROW) {
 		dx = 0;
 	}
 });
-
 
 //----- Floor
 const floorTexture = new three.TextureLoader().load('textures/texture_1.jpg');
@@ -137,27 +133,28 @@ const isShapeInstance = (body: unknown): body is TShapeInstance => body instance
 screen.on('mousedown', (e) => {
 	mouse.x = (e.x / screen.w) * 2 - 1;
 	mouse.y = -(e.y / screen.h) * 2 + 1;
-	
+
 	raycaster.setFromCamera(mouse, screen.camera);
 	const ray = raycaster.ray;
-	
+
 	const start = ray.origin;
 	const end = ray.at(9001, new three.Vector3());
-	
+
 	const { body } = scene.hit(start, end);
 	const shape = isShapeInstance(body) ? body : null;
-	
+
 	if (shape?.mass) {
-		if (e.button === 0) { // left
+		if (e.button === 0) {
+			// left
 			shape.vell = [0, 10 + 30 * Math.random(), 0];
 			shape.vela = [10 * Math.random(), 10 * Math.random(), 10 * Math.random()];
 			shape.debug = shape.debug === 'solid' ? 'wire' : 'solid';
-		} else if (e.button === 2) { // right
+		} else if (e.button === 2) {
+			// right
 			shape.destroy();
 		}
 	}
 });
-
 
 const getCommonOpts = (): TOptsShape => ({
 	sceneThree: screen.scene,
@@ -166,7 +163,6 @@ const getCommonOpts = (): TOptsShape => ({
 	debug: 'solid',
 	color: Math.min(0xffffff, 0x888888 + Math.floor(0x888888 * Math.random())),
 });
-
 
 const createCylinder = (): TShapeInstance => {
 	const radius = getRandom(0.5, 2);
@@ -177,12 +173,11 @@ const createCylinder = (): TShapeInstance => {
 	});
 };
 
-
-const createBox = (): TShapeInstance => new Shape({
-	...getCommonOpts(),
-	size: { x: getRandom(1, 5), y: getRandom(1, 5), z: getRandom(1, 5) },
-});
-
+const createBox = (): TShapeInstance =>
+	new Shape({
+		...getCommonOpts(),
+		size: { x: getRandom(1, 5), y: getRandom(1, 5), z: getRandom(1, 5) },
+	});
 
 const createSphere = (): TShapeInstance => {
 	const radius = getRandom(2, 3);
@@ -192,7 +187,6 @@ const createSphere = (): TShapeInstance => {
 		size: [radius, radius, radius],
 	});
 };
-
 
 const createCapsule = (): TShapeInstance => {
 	const radius = getRandom(0.5, 2);
@@ -206,17 +200,13 @@ const createCapsule = (): TShapeInstance => {
 const bodies: TShapeInstance[] = [plane];
 
 for (let i = 0; i < 40; i++) {
-	bodies.push(createBox());
-	bodies.push(createCylinder());
-	bodies.push(createCapsule());
-	bodies.push(createSphere());
+	bodies.push(createBox(), createCylinder(), createCapsule(), createSphere());
 }
-
 
 loop(() => {
 	screen.camera.position.x += dx;
 	screen.camera.position.z += dz;
-	
+
 	scene.update();
 	screen.draw();
 });

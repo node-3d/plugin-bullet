@@ -7,7 +7,7 @@ const initPlugin = (opts: TInitOpts = {}): TBullet3D => {
 	const { three = null } = opts;
 	const scene = new Scene();
 	const Shape = initShape({ scene, three });
-	
+
 	return {
 		bullet,
 		scene,

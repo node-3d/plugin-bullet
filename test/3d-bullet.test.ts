@@ -8,13 +8,9 @@ init();
 
 const inited = initBullet({ three });
 
-const {
-	Shape, scene,
-} = inited;
+const { Shape, scene } = inited;
 
-const initResults = [
-	'Shape', 'scene', 'bullet',
-] as const;
+const initResults = ['Shape', 'scene', 'bullet'] as const;
 
 const initedClasses = {
 	Shape: {
@@ -25,38 +21,28 @@ const initedClasses = {
 	},
 } as const;
 
-
 const tested = describe('Bullet 3D Inited', () => {
 	it('returns all init results', () => {
 		for (const name of initResults) {
-			assert.ok(
-				typeof inited[name],
-				`Init field "${name}" is missing.`,
-			);
+			assert.ok(typeof inited[name], `Init field "${name}" is missing.`);
 		}
 	});
-	
+
 	for (const c of Object.keys(initedClasses) as (keyof typeof initedClasses)[]) {
 		it(`exports class "${c}"`, () => {
 			assert.strictEqual(typeof inited[c], 'function');
 		});
-		
+
 		const current = initedClasses[c];
 		const instance = current.create();
-		
+
 		it(`is valid instance of ${c}`, () => {
-			assert.ok(
-				instance instanceof inited[c],
-				`Can't instantiate class "${c}".`,
-			);
+			assert.ok(instance instanceof inited[c], `Can't instantiate class "${c}".`);
 		});
-		
+
 		it(`exposes properties of "${c}"`, () => {
 			for (const prop of current.props) {
-				assert.ok(
-					instance[prop] !== undefined,
-					`Property "${c}.${prop}" not found.`,
-				);
+				assert.ok(instance[prop] !== undefined, `Property "${c}.${prop}" not found.`);
 			}
 		});
 	}

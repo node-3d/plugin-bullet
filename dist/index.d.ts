@@ -9,6 +9,6 @@ declare const init: (opts?: TInitOpts) => TBullet3D;
 export { init };
 export type { TBullet, TBullet3D, TDebugMode, TInitOpts, TNewableShape, TOptsShape, TShapeInstance, TThree, } from './types.ts';
 declare const _default: {
-    init: (opts?: TInitOpts) => TBullet3D;
+    init: typeof init;
 };
 export default _default;
