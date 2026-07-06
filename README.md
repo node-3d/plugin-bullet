@@ -55,7 +55,7 @@ loop(() => {
 });
 ```
 
-* See [example](/examples/main.ts) for a complete setup.
+* See [example](examples/main.ts) for a complete setup.
 
 ## API
 
