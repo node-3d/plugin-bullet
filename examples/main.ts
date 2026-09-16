@@ -3,6 +3,7 @@ import { init, addThreeHelpers, Image, Screen } from '@node-3d/core';
 import { init as initBullet } from '@node-3d/plugin-bullet';
 import type { TOptsShape, TShapeInstance } from '@node-3d/plugin-bullet';
 import type { TVec3Like } from '@node-3d/bullet';
+import type { TKeyEvent, TMouseButtonEvent } from '../../glfw/dist/types';
 
 const { doc, loop } = init({
 	isGles3: true,
@@ -48,14 +49,8 @@ const getRandomPosition = (): TVec3Like => ({
 let dx = 0;
 let dz = 0;
 
-const F_KEY = 70;
-const UP_ARROW = 87;
-const DOWN_ARROW = 83;
-const LEFT_ARROW = 65;
-const RIGHT_ARROW = 68;
-
-screen.on('keydown', (e) => {
-	if (e.keyCode === F_KEY) {
+screen.on('keydown', (e: TKeyEvent) => {
+	if (e.code === 'KeyF') {
 		if (e.ctrlKey && e.shiftKey) {
 			screen.mode = 'windowed';
 		} else if (e.ctrlKey && e.altKey) {
@@ -65,21 +60,21 @@ screen.on('keydown', (e) => {
 		}
 	}
 
-	if (e.keyCode === UP_ARROW) {
+	if (e.code === 'KeyW') {
 		dz = -0.2;
-	} else if (e.keyCode === DOWN_ARROW) {
+	} else if (e.code === 'KeyS') {
 		dz = 0.2;
-	} else if (e.keyCode === LEFT_ARROW) {
+	} else if (e.code === 'KeyA') {
 		dx = -0.2;
-	} else if (e.keyCode === RIGHT_ARROW) {
+	} else if (e.code === 'KeyD') {
 		dx = 0.2;
 	}
 });
 
-screen.on('keyup', (e) => {
-	if (e.keyCode === UP_ARROW || e.keyCode === DOWN_ARROW) {
+screen.on('keyup', (e: TKeyEvent) => {
+	if (e.code === 'KeyW' || e.code === 'KeyS') {
 		dz = 0;
-	} else if (e.keyCode === LEFT_ARROW || e.keyCode === RIGHT_ARROW) {
+	} else if (e.code === 'KeyA' || e.code === 'KeyD') {
 		dx = 0;
 	}
 });
@@ -130,7 +125,7 @@ const mouse = new three.Vector2();
 
 const isShapeInstance = (body: unknown): body is TShapeInstance => body instanceof Shape;
 
-screen.on('mousedown', (e) => {
+screen.on('mousedown', (e: TMouseButtonEvent) => {
 	mouse.x = (e.x / screen.w) * 2 - 1;
 	mouse.y = -(e.y / screen.h) * 2 + 1;
 

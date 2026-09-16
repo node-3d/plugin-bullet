@@ -35,34 +35,33 @@ const quatParts = (value: TQuatLike): TQuatParts =>
 
 const createDebugGeometry = (
 	three: typeof THREE,
-	type: TShapeType,
+	shapeType: TShapeType,
 	sizeRaw: TVec3Like,
 ): THREE.BufferGeometry | null => {
 	const size = vec3Parts(sizeRaw);
 
-	if (!type || type === 'box') {
+	if (!shapeType) {
 		return new three.BoxGeometry(size.x, size.y, size.z);
 	}
 
-	if (type === 'ball') {
-		return new three.IcosahedronGeometry(size.x * 0.5, 2);
+	switch (shapeType) {
+		case 'box':
+			return new three.BoxGeometry(size.x, size.y, size.z);
+		case 'ball':
+			return new three.IcosahedronGeometry(size.x * 0.5, 2);
+		case 'roll':
+			return new three.CylinderGeometry(size.x * 0.5, size.x * 0.5, size.y, 16);
+		case 'pill':
+			return new three.CapsuleGeometry(size.x * 0.5, size.y, 2, 16);
+		case 'plane': {
+			const geo = new three.PlaneGeometry(1000, 1000, 4, 4);
+			geo.rotateX(-Math.PI * 0.5);
+			return geo;
+		}
+		default:
+			shapeType satisfies never;
+			return new three.BoxGeometry(size.x, size.y, size.z);
 	}
-
-	if (type === 'roll') {
-		return new three.CylinderGeometry(size.x * 0.5, size.x * 0.5, size.y, 16);
-	}
-
-	if (type === 'pill') {
-		return new three.CapsuleGeometry(size.x * 0.5, size.y, 2, 16);
-	}
-
-	if (type === 'plane') {
-		const geo = new three.PlaneGeometry(1000, 1000, 4, 4);
-		geo.rotateX(-Math.PI * 0.5);
-		return geo;
-	}
-
-	return null;
 };
 
 // oxlint-disable-next-line max-lines-per-function
@@ -73,14 +72,14 @@ const initShape = ({ scene, three }: TInitShapeOpts): TNewableShape => {
 			: null;
 
 		private _meshDebug: THREE.Mesh | null = null;
-		private _sceneThree: THREE.Scene | null;
-		private _color: THREE.ColorRepresentation;
+		private readonly _sceneThree: THREE.Scene | null;
+		private readonly _color: THREE.ColorRepresentation;
 		private _debug: TDebugMode | null = null;
 		private _mesh: THREE.Object3D | null = null;
 
 		public constructor(opts: TOptsShape = {}) {
 			const { sceneBullet, sceneThree, mesh, debug, color, ...rest } = opts;
-			const sceneFinal = sceneBullet || scene;
+			const sceneFinal = sceneBullet ?? scene;
 			super({ ...rest, scene: sceneFinal });
 
 			Object.defineProperty(this, 'mesh', {
@@ -89,10 +88,10 @@ const initShape = ({ scene, three }: TInitShapeOpts): TNewableShape => {
 				set: (value: THREE.Object3D | null | undefined) => this._setMesh(value),
 			});
 
-			this._sceneThree = sceneThree || null;
-			this._color = color || DEFAULT_COLOR;
-			this._setMesh(mesh || null);
-			this.debug = debug || null;
+			this._sceneThree = sceneThree ?? null;
+			this._color = color ?? DEFAULT_COLOR;
+			this._setMesh(mesh ?? null);
+			this.debug = debug ?? null;
 
 			this.on('update', ({ pos, quat }: TFollowEvent) => this._follow(pos, quat));
 
@@ -116,13 +115,7 @@ const initShape = ({ scene, three }: TInitShapeOpts): TNewableShape => {
 				return;
 			}
 
-			if (value && value !== 'solid' && value !== 'wire') {
-				warnWithTrace('Option `debug` must be "solid" or "wire", if set.');
-				this._debug = null;
-			} else {
-				this._debug = value || null;
-			}
-
+			this._debug = value ?? null;
 			this._resetDebugMesh();
 		}
 
@@ -131,7 +124,7 @@ const initShape = ({ scene, three }: TInitShapeOpts): TNewableShape => {
 				return;
 			}
 
-			this._mesh = value || null;
+			this._mesh = value ?? null;
 
 			if (!this._mesh) {
 				return;

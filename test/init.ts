@@ -1,7 +1,11 @@
 import { platform } from 'node:process';
 import * as three from 'three';
-import type { TCore3D, TGlfw, TInitOpts } from '@node-3d/core';
+import type { Screen as TScreen, TCore3D, TGlfw, TInitOpts } from '@node-3d/core';
 import type { TBullet3D } from '../ts/index.ts';
+
+type TInitForTest = TCore3D & TBullet3D & {
+	Screen: typeof TScreen;
+};
 
 const shouldUseHeadlessGlfw = platform === 'darwin';
 
@@ -27,7 +31,7 @@ const bootstrapHeadlessGlfw = async (): Promise<TGlfw | null> => {
 	}
 
 	const nodeGlobal = globalThis as unknown as Record<string, unknown>;
-	nodeGlobal['__isGlfwInited'] = true;
+	nodeGlobal.__isGlfwInited = true;
 	const { glfw } = await import('@node-3d/glfw');
 	glfw.initHint(glfw.PLATFORM, glfw.PLATFORM_NULL);
 
@@ -36,7 +40,7 @@ const bootstrapHeadlessGlfw = async (): Promise<TGlfw | null> => {
 	}
 
 	glfw.defaultWindowHints();
-	nodeGlobal['__isGlfwInited'] = true;
+	nodeGlobal.__isGlfwInited = true;
 	return glfw;
 };
 
@@ -65,7 +69,7 @@ const getInitOpts = (): TInitOpts => {
 	return { width: 400, height: 400, isGles3: false, major: 2, minor: 1 };
 };
 
-const initForTest = async (): Promise<TCore3D & TBullet3D & Pick<typeof core, 'Screen'>> => {
+const initForTest = async (): Promise<TInitForTest> => {
 	if (shouldUseHeadlessGlfw) {
 		(headlessGlfw ?? glfw).windowHint(glfw.STENCIL_BITS, 0);
 	}
