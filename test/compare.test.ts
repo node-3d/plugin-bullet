@@ -16,7 +16,7 @@ const report = (level: TScreenshotReportLevel, message: string, error?: unknown)
 
 describe('Screenshots', () => {
 	it('matches debug shapes screenshot', async () => {
-		const screen = new Screen({ three, fov: 55, near: 1, far: 100 });
+		const screen = new Screen({ fov: 55, near: 1, far: 100 });
 		screen.camera.position.set(8, 7, 10);
 		screen.camera.lookAt(0, 1, 0);
 		screen.scene.background = new three.Color(0x202838);

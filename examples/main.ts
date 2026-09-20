@@ -14,7 +14,7 @@ const { doc, loop } = init({
 	msaa: 2,
 });
 
-addThreeHelpers(three);
+addThreeHelpers();
 
 const { scene, Shape } = initBullet({ three });
 
@@ -26,7 +26,7 @@ icon.on('load', () => {
 });
 doc.title = 'Bullet';
 
-const screen = new Screen({ three, fov: 60, near: 1, far: 200 });
+const screen = new Screen({ fov: 60, near: 1, far: 200 });
 
 screen.camera.position.z = 40;
 screen.camera.position.y = 10;

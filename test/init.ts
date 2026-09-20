@@ -3,9 +3,10 @@ import * as three from 'three';
 import type { Screen as TScreen, TCore3D, TGlfw, TInitOpts } from '@node-3d/core';
 import type { TBullet3D } from '../ts/index.ts';
 
-type TInitForTest = TCore3D & TBullet3D & {
-	Screen: typeof TScreen;
-};
+type TInitForTest = TCore3D &
+	TBullet3D & {
+		Screen: typeof TScreen;
+	};
 
 const shouldUseHeadlessGlfw = platform === 'darwin';
 
@@ -77,7 +78,7 @@ const initForTest = async (): Promise<TInitForTest> => {
 	const node3d = init(getInitOpts());
 	const { init: initBullet } = await import('../ts/index.ts');
 
-	addThreeHelpers(three);
+	addThreeHelpers();
 	return { ...node3d, ...initBullet({ three }), Screen };
 };
 
