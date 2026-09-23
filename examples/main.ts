@@ -3,7 +3,7 @@ import { init, addThreeHelpers, Image, Screen } from '@node-3d/core';
 import { init as initBullet } from '@node-3d/plugin-bullet';
 import type { TOptsShape, TShapeInstance } from '@node-3d/plugin-bullet';
 import type { TVec3Like } from '@node-3d/bullet';
-import type { TKeyEvent, TMouseButtonEvent } from '../../glfw/dist/types';
+import type { TKeyEvent, TMouseButtonEvent } from '@node-3d/glfw';
 
 const { doc, loop } = init({
 	isGles3: true,

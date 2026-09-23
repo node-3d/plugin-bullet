@@ -24,6 +24,7 @@
 	},
 	"scripts": {
 		"i": "npm install --workspaces=false",
+		"example": "cd examples && node main.ts",
 		"test:watch": "node --test --watch \"test/**/*.test.ts\"",
 		"test:ci": "node --test \"test/**/*.test.ts\"",
 		"lint:oxlint": "oxlint .",
@@ -47,6 +48,7 @@
 		"@types/three": "0.186.0",
 		"@node-3d/core": "~6.3.0",
 		"@node-3d/addon-tools": "~10.1.0",
+		"@node-3d/glfw": "~7.4.0",
 		"oxlint": "1.81.0",
 		"oxlint-tsgolint": "7.0.2001",
 		"tslib": "2.8.1",
