@@ -41,12 +41,12 @@
 		"url": "git+https://github.com/node-3d/plugin-bullet.git"
 	},
 	"dependencies": {
-		"@node-3d/bullet": "~5.0.0"
+		"@node-3d/bullet": "~5.1.0"
 	},
 	"devDependencies": {
 		"@types/node": "24.13.2",
 		"@types/three": "0.186.0",
-		"@node-3d/core": "~6.3.0",
+		"@node-3d/core": "~6.4.0",
 		"@node-3d/addon-tools": "~10.1.0",
 		"@node-3d/glfw": "~7.4.0",
 		"oxlint": "1.81.0",
